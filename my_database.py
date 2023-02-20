@@ -134,13 +134,15 @@ class DB:
 																	Goods.link_on_parent_page==parent,
 																	func.length(Goods.instock)>0,
 																	Goods.price==price.price).all()
-						#lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = ''
-						print(len(rows))
-						print()
-						print(rows)
-						print()
+						lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = '','','','','','',''
 						for row in rows:
-							print(price, ' ===> ', parent, ' ======> ', row)
+							lc_name = f'{row.article} {row.name}'
+							lc_description = row.description
+							lc_price = price.price
+							lc_link = parent
+							lc_pictures = row.pictures
+							lc_size = f'Рост: {row.colors}  Размер: {row.sizes} {row.instock}'
+							print(lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size)
 
 		return False
 				#lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = ''
