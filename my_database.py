@@ -6,6 +6,7 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy.sql.expression import func
 from sqlalchemy import select
 from sqlalchemy import cast, Date, distinct, union
+import csv
 # создаем класс, от которого будут наследоваться модели
 
 Base = declarative_base()
@@ -120,6 +121,9 @@ class DB:
 		ll_catalogs = [] # list of unqie catalogs
 		for record in records: ll_catalogs.append(record.catalog)
 		for catalog in ll_catalogs:
+			catalog_csv_file = open(catalog, 'w', encoding='1251', errors = 'ignore', newline='\n')
+			csv_writer = csv.writer(catalog_csv_file, quotechar='"', quoting=csv.QUOTE_ALL, delimiter=';', dialect='excel' )
+			csv_writer.writerow(['ID','наименование','описание','цена','орг %','ccылка на товар на сайте поставщика','ссылки на Фото','Размер'])
 			ll_parents = [] # list of unique parents into catalog
 			records = self.session.query(Goods.link_on_parent_page).filter(Goods.catalog==catalog).distinct()
 			for record in records: ll_parents.append(record.link_on_parent_page)
@@ -129,20 +133,24 @@ class DB:
 															func.length(Goods.instock)>0,
 															cast(Goods.price, Integer)>0).distinct()
 				for price in prices.all():
-						print()
-						rows = self.session.query(Goods).filter(	Goods.catalog==catalog, 
-																	Goods.link_on_parent_page==parent,
-																	func.length(Goods.instock)>0,
-																	Goods.price==price.price).all()
-						lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = '','','','','','',''
-						for row in rows:
-							lc_name = f'{row.article} {row.name}'
-							lc_description = row.description
-							lc_price = price.price
-							lc_link = parent
-							lc_pictures = row.pictures
-							lc_size = f'Рост: {row.colors}  Размер: {row.sizes} {row.instock}'
-							print(lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size)
+					print()
+					rows = self.session.query(Goods).filter(	Goods.catalog==catalog, 
+																Goods.link_on_parent_page==parent,
+																func.length(Goods.instock)>0,
+																Goods.price==price.price).all()
+					lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = '','','','','','',''
+					for row in rows:
+						lc_name = f'{row.article} {row.name}'
+						lc_description = row.description
+						lc_price = price.price
+						lc_link = parent
+						lc_pictures = row.pictures
+						lc_size = lc_size + (';' if len(lc_size)>0 else '') + f'Рост: {row.colors}  Размер: {row.sizes}  Остаток: {row.instock}'
+					print(lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size)
+					csv_writer.writerow(['',lc_name, lc_description, lc_price, '15',lc_link, lc_pictures, lc_size])
+			catalog_csv_file.close()
+					
+			
 
 		return False
 				#lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = ''
