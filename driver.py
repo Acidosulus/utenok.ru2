@@ -30,6 +30,8 @@ class WD:
 	def __init__(self):
 		self.init()
 		if True:
+			config = configparser.ConfigParser()
+			config.read("options.ini")     
 			chrome_options = webdriver.ChromeOptions()
 			chrome_prefs = {}
 			chrome_options.experimental_options["prefs"] = chrome_prefs
@@ -40,8 +42,8 @@ class WD:
 			self.driver = webdriver.Chrome(options=chrome_options)
 			self.driver.maximize_window()
 			self.Get_HTML('https://utenok.ru/login/?return_url=index.php')
-			self.driver.find_element_by_id("login_main_login").send_keys("Lessie-May@yandex.ru")
-			self.driver.find_element_by_id("psw_main_login").send_keys("uslm1976")
+			self.driver.find_element_by_id("login_main_login").send_keys(config["Login"]["Login"])
+			self.driver.find_element_by_id("psw_main_login").send_keys(config["Login"]["Password"])
 			self.driver.find_element_by_id("remember_me_main_login").click()
 			self.driver.find_element_by_id("psw_main_login").send_keys("\n")
 
