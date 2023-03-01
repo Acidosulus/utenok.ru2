@@ -70,12 +70,58 @@ class GoodWD:
 					else:
 						self.color = data
 				
+		print('=====================================')
+		rows = ol.driver.find_elements(By.CLASS_NAME, value = 'ty-variations-list__item')
+		
+		for j, row in enumerate(rows, start=1):
+			if self.id in row.text:
+				print(f'****** {j}')
+				opts = row.find_elements(By.CLASS_NAME, value = 'ty-product-options')
+				for i, opt in enumerate(opts, start=1):
+					print(f'{i}: {opt.text}')
+					if i == 2:
+						self.color = opt.text
+					if i == 3:
+						self.size = opt.text
+				lc_remain = row.find_elements(By.CLASS_NAME, value = 'ty-qty-in-stock')[1].text
+				print('remain: '+ lc_remain)
+				if int(lc_remain.replace('шт.','').replace(' ',''))>0:
+					self.price = row.find_element(By.CLASS_NAME, value = 'ty-price-num').get_attribute('innerHTML').replace('<sup>','.').replace('</sup>','')
+					print(f'Price: {self.price}')
+					self.db.save_good_from_parameter(				catalog=pc_price, 
+																	link_on_parent_page=self.parent, 
+																	link_on_good=pc_good_link + f'{j}',
+																	article=self.article,
+																	name=self.name,
+																	description=self.description,
+																	price=self.price,
+																	pictures=' '.join(self.pictures).strip(),
+																	colors=self.size,
+																	sizes=self.color,
+																	instock=lc_remain)
 
 
+
+
+		return 
+		self.db.save_good_from_parameter(	catalog=pc_price, 
+														link_on_parent_page=self.parent, 
+														link_on_good=pc_good_link,
+														article=self.article,
+														name=self.name,
+														description=self.description,
+														price=self.price,
+														pictures=' '.join(self.pictures).strip(),
+														colors=self.color,
+														sizes=self.size,
+														instock=self.instock)
+					
+		print('=====================================')
 
 		
 		#for i in range(ol.driver.page_source.count("data-ca-product-url")):
 		#	print(sx(ol.driver.page_source,'data-ca-product-url="','"',i+1))
+		return
 		self.db.save_good_from_parameter(	catalog=pc_price, 
 											link_on_parent_page=self.parent, 
 											link_on_good=pc_good_link,

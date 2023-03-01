@@ -218,7 +218,7 @@ def download_image(url, file_path):
 
 if True:
 	db = DB('g:\\utenok.ru2\\databases\\DataBase.db')
-	db.undload_missing_pictures()
+	#db.undload_missing_pictures()
 	db.Create_CSVs()
 	#db.test()
 

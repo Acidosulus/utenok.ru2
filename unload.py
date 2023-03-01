@@ -41,10 +41,7 @@ if sys.argv[1] == 'good':
 	print(sys.argv[1], sys.argv[2])
 	price = Price(sys.argv[3])
 	primary_good = unload_one_good(wd, sys.argv[2], sys.argv[3] , False, sys.argv[2])
-	list_of_submissives = db.get_none_load_goods_by_parent_link(sys.argv[3], sys.argv[2])
-	print(list_of_submissives)
-	for submissive_link in list_of_submissives:
-		submissive_good = unload_one_good(wd, submissive_link, sys.argv[3], True, sys.argv[2])
+	
 	
 
 
@@ -61,10 +58,6 @@ if sys.argv[1] == 'catalog':
 		echo(style(text=f'{ln_current_link_number}', bg='blue', fg='bright_yellow') + \
 			style(text=f'/{ln_total}', bg='blue', fg='yellow'))
 		primary_good = unload_one_good(wd, link_on_good, sys.argv[3] , False, link_on_good)
-		list_of_submissives = db.get_none_load_goods_by_parent_link(sys.argv[3], link_on_good)
-		print(list_of_submissives)
-		for submissive_link in list_of_submissives:
-			submissive_good = unload_one_good(wd, submissive_link, sys.argv[3], True, sys.argv[2])
 
 if sys.argv[1] == 'reverse':
 	reverse_csv_price(sys.argv[2])
