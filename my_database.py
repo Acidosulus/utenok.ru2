@@ -160,12 +160,25 @@ class DB:
 					lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size, lc_color = '','','','','','',''
 					for row in rows:
 						lc_name = f'{row.article} {row.name}'
-						lc_description = row.description
-						lc_price = price.price
+						lc_description = row.description if len(lc_description)==0 else lc_description
+						lc_price = price.price if len(lc_price)==0 else lc_price
 						lc_link = parent
 						lc_pictures = (row.outside if len(lc_pictures)==0  else lc_pictures)
 						lc_size = lc_size + (';' if len(lc_size)>0 else '') + f'Рост: {row.colors}  Размер: {row.sizes}  Остаток: {row.instock}'
 					print(lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size)
+					if len(lc_pictures)==0:
+						print(catalog)
+						print(parent)
+						row = self.session.query(Goods).filter(			Goods.catalog==catalog, 
+																		Goods.link_on_parent_page==parent,
+																		func.length(Goods.outside)>0)
+						print(row.statement)
+						
+						try:
+							lc_pictures = row.first().outside
+							print('>>>>>>>>>>>>>>>>>>>>', lc_pictures)
+						except: pass
+						
 					csv_writer.writerow(['',lc_name, lc_description, lc_price, '15',lc_link, lc_pictures, lc_size])
 			catalog_csv_file.close()
 					
