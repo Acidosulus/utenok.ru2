@@ -166,7 +166,7 @@ class DB:
 						lc_pictures = (row.outside if len(lc_pictures)==0  else lc_pictures)
 						lc_size = lc_size + (';' if len(lc_size)>0 else '') + f'Рост: {row.colors}  Размер: {row.sizes}  Остаток: {row.instock}'
 					print(lc_name, lc_description, lc_price, lc_link, lc_pictures, lc_size)
-					if len(lc_pictures)==0:
+					if len(lc_pictures.strip())==0:
 						print(catalog)
 						print(parent)
 						row = self.session.query(Goods).filter(			Goods.catalog==catalog, 
@@ -179,7 +179,7 @@ class DB:
 							print('>>>>>>>>>>>>>>>>>>>>', lc_pictures)
 						except: pass
 						
-					csv_writer.writerow(['',lc_name, lc_description, lc_price, '15',lc_link, lc_pictures, lc_size])
+					csv_writer.writerow(['',lc_name, lc_description, lc_price.replace('&nbsp;',''), '15',lc_link, lc_pictures, lc_size])
 			catalog_csv_file.close()
 					
 	
@@ -199,17 +199,17 @@ class DB:
 		ll = gd.pictures.split()
 		llresult = []
 		for picture in ll:
-			lc_new_file_name = sx('|'+picture[::-1],'|','/')[::-1]
-			print(picture)
+			lc_new_file_name = sx('|'+picture.replace('.jpg','.png')[::-1],'|','/')[::-1]
+			print(picture.replace('.jpg','.png'))
 			lc_local_file_name = config["Paths"]["webppath"] + lc_new_file_name + r'.webp'
 			if not os.path.exists(config["Paths"]["webppath"] + lc_new_file_name):
 				unload_picture(picture, lc_local_file_name)
 				#wget.download(url=picture, out=lc_local_file_name, bar=None)
 				im = Image.open(fp=lc_local_file_name).convert("RGB")
-				im.save(config["Paths"]["webppath"] + lc_new_file_name ,"jpeg")
+				im.save(config["Paths"]["webppath"] + lc_new_file_name ,"png")
 				llresult.append(config["Paths"]["internet_path"]+lc_new_file_name)
 				os.remove(lc_local_file_name)
-			else: print(f"File {config['Paths']['webppath'] + lc_new_file_name + '.jpg'} already exists")
+			else: print(f"File {config['Paths']['webppath'] + lc_new_file_name + '.png'} already exists")
 		gd.outside = ' '.join(llresult)
 		print(gd.outside)
 		self.save_good(gd)
