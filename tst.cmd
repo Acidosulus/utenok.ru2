@@ -1,1 +1,1 @@
-python my_database.py
+python my_database.py "csvs"

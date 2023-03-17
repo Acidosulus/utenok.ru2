@@ -16,6 +16,7 @@ import requests
 import shutil
 import urllib.request
 from fake_useragent import UserAgent
+import sys
 
 Base = declarative_base()
 config = configparser.ConfigParser()
@@ -169,8 +170,7 @@ class DB:
 					if len(lc_pictures.strip())==0:
 						print(catalog)
 						print(parent)
-						row = self.session.query(Goods).filter(			Goods.catalog==catalog, 
-																		Goods.link_on_parent_page==parent,
+						row = self.session.query(Goods).filter(			Goods.link_on_parent_page==parent,
 																		func.length(Goods.outside)>0)
 						print(row.statement)
 						
@@ -231,8 +231,10 @@ def download_image(url, file_path):
 
 if True:
 	db = DB('g:\\utenok.ru2\\databases\\DataBase.db')
-	#db.undload_missing_pictures()
-	db.Create_CSVs()
+	if sys.argv[1] == 'pictures':
+		db.undload_missing_pictures()
+	if sys.argv[1] == 'csvs':
+		db.Create_CSVs()
 	#db.test()
 
 if False:
