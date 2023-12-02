@@ -40,12 +40,22 @@ class GoodWD:
 		echo(style('Товар: ', fg='bright_yellow') + style(pc_good_link, fg='bright_white') + style('  Прайс:', fg='bright_cyan') + style(pc_price, fg='bright_green'))
 
 		#ol.Get_HTML(pc_good_link)
-
-		self.article = sx(ol.driver.find_element(By.CLASS_NAME, value='ty-features-list').text,'Артикул',' ')
+		try:
+			self.article = sx(ol.driver.find_element(By.CLASS_NAME, value='ty-features-list').text,'Артикул',' ')
+		except:
+			self.article = ''
 		self.name = ol.driver.find_element(By.TAG_NAME, value='h1').text.strip()
 		self.price = sx('|'+ol.driver.find_element(By.CLASS_NAME, value='ty-price-num').get_attribute('innerHTML'),'|','<').strip().replace('&nbsp;','')
-		self.description = (ol.driver.find_element(By.CLASS_NAME, value ='ty-features-list').text + ' ' + ol.driver.find_element(By.ID, value ='content_description').text).strip()
-		
+
+		try:
+			text1 = ol.driver.find_element(By.CLASS_NAME, value ='ty-features-list').text.strip()
+		except:
+			text1 = ''
+		try:
+			text2 = ol.driver.find_element(By.ID, value ='content_description').text.strip()
+		except:
+			text2 = ''
+		self.description = text1 + ' ' + text2
 		soup = BS(ol.page_source, features='html5lib')
 		pictures = soup.find_all('a',{'class':'cm-image-previewer cm-previewer ty-previewer'})
 		for picture in pictures:

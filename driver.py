@@ -42,10 +42,10 @@ class WD:
 			self.driver = webdriver.Chrome(options=chrome_options)
 			self.driver.maximize_window()
 			self.Get_HTML('https://utenok.ru/login/?return_url=index.php')
-			self.driver.find_element_by_id("login_main_login").send_keys(config["Login"]["Login"])
-			self.driver.find_element_by_id("psw_main_login").send_keys(config["Login"]["Password"])
-			self.driver.find_element_by_id("remember_me_main_login").click()
-			self.driver.find_element_by_id("psw_main_login").send_keys("\n")
+			self.driver.find_element(By.ID, "login_main_login").send_keys(config["Login"]["Login"])
+			self.driver.find_element(By.ID, "psw_main_login").send_keys(config["Login"]["Password"])
+			self.driver.find_element(By.ID, "remember_me_main_login").click()
+			self.driver.find_element(By.ID, "psw_main_login").send_keys("\n")
 
 #	def __del__(self):
 		#try:
@@ -64,7 +64,7 @@ class WD:
 				str_to_file('response.html', self.page_source)
 		else:
 			#r = requests.get(curl, headers={'User-Agent': UserAgent().chrome})
-			r = requests.get(curl)
+			#r = requests.get(curl)
 			#self.page_source = r.text
 			#echo(style(text='Downloaded: ', fg='cyan')+style(text=len(self.page_source), fg='green'))
 			#str_to_file(file_path="response.html", st = r.text)
